@@ -1,27 +1,23 @@
-from pydantic import BaseModel
-from typing import List, Optional
-from .blog import Blog # import Blog nếu muốn ShowUser có danh sách blog
+from pydantic import BaseModel, EmailStr
 
 class User(BaseModel):
     name: str
-    email: str
+    email: EmailStr
     password: str
+
 
 class ShowUser(BaseModel):
+    message: str
     name: str
-    email: str
-    blogs: List[Blog] = []
+    email: EmailStr
 
-    class Config():
-        from_attributes = True
 
 class Login(BaseModel):
-    username: str
+    email: EmailStr
     password: str
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
 
-class TokenData(BaseModel):
-    email: Optional[str] = None
+class SignUp(BaseModel):
+    name: str
+    email: EmailStr
+    password: str

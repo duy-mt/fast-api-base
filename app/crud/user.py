@@ -1,21 +1,21 @@
+from bson import ObjectId
+from typing import Optional
 
-from sqlalchemy.orm import Session
 
-from ..models.user import User
-from ..schemas import user
-from fastapi import HTTPException,status
-from utils.hashing import Hash
+async def get_user_by_email(db, email: str) -> Optional[dict]:
+    user = await db["users"].find_one({"email": email})
 
-def create(request: user.User,db:Session):
-    new_user = User(name=request.name,email=request.email,password=Hash.bcrypt(request.password))
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
+    if user:
+        user["id"] = str(user["_id"])
+        user.pop("_id", None)
 
-def show(id:int,db:Session):
-    user = db.query(User).filter(User.id == id).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"User with the id {id} is not available")
     return user
+
+
+async def create_user_by_email(db, user_data: dict) -> dict:
+    result = await db["users"].insert_one(user_data)
+    new_user = await db["users"].find_one({"_id": result.inserted_id})
+    if new_user:
+        new_user["id"] = str(new_user["_id"])
+        new_user.pop("_id", None)
+    return new_user

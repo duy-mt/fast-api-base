@@ -1,22 +1,33 @@
-from fastapi import APIRouter
-from app.core import database
-from ..user.routers import database, schemas, models
-from sqlalchemy.orm import Session
-from fastapi import APIRouter,Depends,status
-from ..crud.user import userRepository
-
-router = APIRouter(
-    prefix="/user",
-    tags=['Users']
+from fastapi import APIRouter, HTTPException, status, Depends, Response, Request
+from app.core.database import get_db
+from ..schemas import user
+from ..services.user import (
+    create_user_logic,
+    user_login_logic,
+    verify_user,
+    user_logout_logic,
 )
+from ..services.auth import verify_token
 
-get_db = database.get_db
+router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@router.post('/', response_model=schemas.ShowUser)
-def create_user(request: schemas.User,db: Session = Depends(get_db)):
-    return userRepository.create(request,db)
+@router.get("/", response_model=list[user.ShowUser])
+@router.post("/signup", response_model=user.ShowUser)
+async def signup(request: user.SignUp, db=Depends(get_db)):
+    return await create_user_logic(request, db)
 
-@router.get('/{id}',response_model=schemas.ShowUser)
-def get_user(id:int,db: Session = Depends(get_db)):
-    return userRepository.show(id,db)
+
+@router.post("/login", response_model=user.ShowUser)
+async def login(request: user.Login, response: Response, db=Depends(get_db)):
+    return await user_login_logic(request, response, db)
+
+
+@router.get("/auth-status", response_model=user.ShowUser)
+async def auth_status(verify_user_response: dict = Depends(verify_user)):
+    return verify_user_response
+
+
+@router.get("/logout", response_model=user.ShowUser)
+async def logout(logout_user_response: dict = Depends(user_logout_logic)):
+    return logout_user_response

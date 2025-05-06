@@ -1,7 +1,15 @@
 fastapi
 uvicorn
-sqlalchemy
 passlib
 bcrypt
 python-jose
 python-multipart
+psycopg2
+pydantic
+pydantic_settings
+motor
+google
+bson
+typing
+datetime
+jose
