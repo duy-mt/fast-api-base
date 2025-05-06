@@ -11,7 +11,6 @@ async def list_sessions_by_user(db, userId: str) -> List[Dict]:
 
     sessions = await cursor.to_list(length=None)
 
-    print("sessions: ", sessions)
     if sessions:
         for session in sessions:
             session["id"] = str(session["_id"])

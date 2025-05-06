@@ -1,15 +1,21 @@
 from fastapi import FastAPI
 from app.routers import user, session
 from fastapi.middleware.cors import CORSMiddleware
+from app.jobs.scheduler import start_scheduler
+from app.config.index import settings
 
 app = FastAPI()
 
 
-origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
+@app.on_event("startup")
+async def startup_event():
+    start_scheduler()
+    print("Scheduler started.")
+
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=settings.ORIGIN,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
