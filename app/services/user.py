@@ -32,8 +32,13 @@ async def create_user_logic(request: SignUp, db):
 
     # 4. return response
 
-    return ShowUser(
-        **{"message": "Ok", "name": new_user["name"], "email": new_user["email"]}
+    return JSONResponse(
+        status_code=status.HTTP_201_CREATED,
+        content={
+            "message": "User created successfully",
+            "name": new_user["name"],
+            "email": new_user["email"],
+        },
     )
 
 
@@ -72,7 +77,7 @@ async def user_login_logic(request: Login, response: Response, db):
         samesite="lax",
     )
     return ShowUser(
-        message="Ok", name=existing_user["name"], email=existing_user["email"]
+        message="OK", name=existing_user["name"], email=existing_user["email"]
     )
 
 
@@ -83,7 +88,7 @@ async def verify_user(payload: dict = Depends(verify_token), db=Depends(get_db))
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token: no email"
         )
 
-    return ShowUser(message="Ok", name=payload["name"], email=payload["email"])
+    return ShowUser(message="OK", name=payload["name"], email=payload["email"])
 
 
 async def user_logout_logic(
@@ -94,4 +99,4 @@ async def user_logout_logic(
     response.delete_cookie("auth_token", domain="localhost", path="/")
 
     # 3. return response
-    return ShowUser(message="Ok", name=payload["name"], email=payload["email"])
+    return ShowUser(message="OK", name=payload["name"], email=payload["email"])

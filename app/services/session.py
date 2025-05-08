@@ -44,7 +44,7 @@ async def create_session_logic(
 
     session = await create_session_by_user(db, userId)
     # 2. Return response
-    return ShowSession(message="Ok", id=session["id"], title=session["title"])
+    return ShowSession(message="OK", id=session["id"], title=session["title"])
 
 
 async def create_message_logic(
@@ -137,7 +137,7 @@ async def list_chat_session_logic(
 
     # 4. return response
 
-    return ListChat(message="Ok", chats=session_chats)
+    return ListChat(message="OK", chats=session_chats)
 
 
 async def update_title_session_logic(
@@ -164,7 +164,7 @@ async def update_title_session_logic(
         )
     # 4. Return response
 
-    return {"message": "Ok"}
+    return {"message": "OK"}
 
 
 async def delete_session_logic(
