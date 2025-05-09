@@ -6,6 +6,8 @@ class Settings(BaseSettings):
     DATABASE: str
     API_KEY: str
     ORIGIN: str
+    ORIGIN_DOCKER: str
+    ORIGIN_KONG: str
 
     class Config:
         env_file = ".env"

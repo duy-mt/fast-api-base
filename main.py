@@ -13,9 +13,11 @@ async def startup_event():
     print("Scheduler started.")
 
 
+origins = [settings.ORIGIN, settings.ORIGIN_DOCKER, settings.ORIGIN_KONG]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ORIGIN,
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
